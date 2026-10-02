@@ -142,6 +142,8 @@ Rectangle
         }
     }
 
+    /* Unified, macOS-style top toolbar:
+     * [ Actions ]   ( workspace segmented control )   [ dump | BPM | STOP ] */
     Rectangle
     {
         id: mainToolbar
@@ -149,163 +151,201 @@ Rectangle
         width: parent.width
         height: UISettings.iconSizeDefault
         z: 50
-        gradient: Gradient
+        color: UISettings.toolbarStartMain
+
+        // bottom hairline
+        Rectangle
         {
-            GradientStop { position: 0; color: UISettings.toolbarStartMain }
-            GradientStop { position: 1; color: UISettings.toolbarEnd }
+            width: parent.width
+            height: 1
+            y: parent.height - 1
+            color: UISettings.borderColorDark
         }
 
         RowLayout
         {
-            spacing: 5
+            spacing: 6
             anchors.fill: parent
+            anchors.leftMargin: 6
+            anchors.rightMargin: 8
 
             ButtonGroup { id: menuBarGroup }
 
             MenuBarEntry
             {
                 id: actEntry
-                Layout.alignment: Qt.AlignTop
+                Layout.alignment: Qt.AlignVCenter
+                implicitHeight: mainToolbar.height
                 imgSource: "qrc:/qlcplus.svg"
                 entryText: qsTr("Actions")
                 onPressed: actionsMenu.open()
                 autoExclusive: false
                 checkable: false
 
-                Image
+                // "unsaved changes" dot, like the macOS document indicator
+                Rectangle
                 {
                     visible: qlcplus.docModified
-                    source: "qrc:/filesave.svg"
-                    x: 1
-                    y: parent.height - height - 1
-                    height: parent.height / 3
-                    width: height
-                    sourceSize: Qt.size(width, height)
+                    x: actEntry.pillMargin + 3
+                    y: actEntry.pillMargin + 3
+                    width: Math.max(7, actEntry.height * 0.2)
+                    height: width
+                    radius: width / 2
+                    color: UISettings.warning
+                    border.width: 1
+                    border.color: UISettings.toolbarStartMain
                 }
             }
-            MenuBarEntry
-            {
-                id: fnfEntry
-                property string ctxName: "FIXANDFUNC"
-                Layout.alignment: Qt.AlignTop
-                property string ctxRes: "qrc:/FixturesAndFunctions.qml"
 
-                //visible: qlcplus.accessMask & App.AC_FunctionEditing
-                imgSource: "qrc:/editor.svg"
-                entryText: qsTr("Fixtures & Functions")
-                checked: false
-                ButtonGroup.group: menuBarGroup
-                onCheckedChanged:
-                {
-                    if (checked === true)
-                        switchToContext(fnfEntry.ctxName, fnfEntry.ctxRes)
-                }
-            }
-            MenuBarEntry
-            {
-                id: vcEntry
-                Layout.alignment: Qt.AlignTop
-                property string ctxName: "VC"
-                property string ctxRes: "qrc:/VirtualConsole.qml"
+            // flexible spacer
+            Item { Layout.fillWidth: true; implicitHeight: 1 }
 
-                visible: qlcplus.accessMask & App.AC_VCControl
-                imgSource: "qrc:/virtualconsole.svg"
-                entryText: qsTr("Virtual Console")
-                ButtonGroup.group: menuBarGroup
-                onCheckedChanged:
-                {
-                    if (checked === true)
-                        switchToContext(vcEntry.ctxName, vcEntry.ctxRes)
-                }
-                onRightClicked:
-                {
-                    vcEntry.visible = false
-                    contextManager.detachContext("VC")
-                }
-            }
-            MenuBarEntry
-            {
-                id: sdEntry
-                Layout.alignment: Qt.AlignTop
-                property string ctxName: "SDESK"
-                property string ctxRes: "qrc:/SimpleDesk.qml"
-
-                visible: qlcplus.accessMask & App.AC_SimpleDesk
-                imgSource: "qrc:/simpledesk.svg"
-                entryText: qsTr("Simple Desk")
-                ButtonGroup.group: menuBarGroup
-                onCheckedChanged:
-                {
-                    if (checked === true)
-                        switchToContext(sdEntry.ctxName, sdEntry.ctxRes)
-                }
-                onRightClicked:
-                {
-                    sdEntry.visible = false
-                    contextManager.detachContext("SDESK")
-                }
-            }
-            MenuBarEntry
-            {
-                id: smEntry
-                Layout.alignment: Qt.AlignTop
-                property string ctxName: "SHOWMGR"
-                property string ctxRes: "qrc:/ShowManager.qml"
-
-                visible: qlcplus.accessMask & App.AC_ShowManager
-                imgSource: "qrc:/showmanager.svg"
-                entryText: qsTr("Show Manager")
-                ButtonGroup.group: menuBarGroup
-                onCheckedChanged:
-                {
-                    if (checked === true)
-                        switchToContext(smEntry.ctxName, smEntry.ctxRes)
-                }
-                onRightClicked:
-                {
-                    smEntry.visible = false
-                    contextManager.detachContext("SHOWMGR")
-                }
-            }
-            MenuBarEntry
-            {
-                id: ioEntry
-                Layout.alignment: Qt.AlignTop
-                property string ctxName: "IOMGR"
-                property string ctxRes: "qrc:/InputOutputManager.qml"
-
-                visible: qlcplus.accessMask & App.AC_InputOutput
-                imgSource: "qrc:/inputoutput.svg"
-                entryText: qsTr("Input/Output")
-                ButtonGroup.group: menuBarGroup
-                onCheckedChanged:
-                {
-                    if (checked === true)
-                        switchToContext(ioEntry.ctxName, ioEntry.ctxRes)
-                }
-                onRightClicked:
-                {
-                    ioEntry.visible = false
-                    contextManager.detachContext("IOMGR")
-                }
-            }
+            // ################## WORKSPACE SEGMENTED CONTROL ##################
             Rectangle
             {
-                // acts like an horizontal spacer
-                Layout.fillWidth: true
-                implicitHeight: parent.height
-                color: "transparent"
+                id: workspaceSwitcher
+                Layout.alignment: Qt.AlignVCenter
+                implicitWidth: workspaceRow.implicitWidth + 6
+                implicitHeight: mainToolbar.height * 0.78
+                radius: UISettings.cornerRadius
+                color: UISettings.bgStronger
+                border.width: 1
+                border.color: UISettings.separator
+
+                RowLayout
+                {
+                    id: workspaceRow
+                    anchors.centerIn: parent
+                    height: parent.height - 2
+                    spacing: 0
+
+                    MenuBarEntry
+                    {
+                        id: fnfEntry
+                        property string ctxName: "FIXANDFUNC"
+                        property string ctxRes: "qrc:/FixturesAndFunctions.qml"
+                        implicitHeight: workspaceRow.height
+                        pillMargin: 2
+
+                        //visible: qlcplus.accessMask & App.AC_FunctionEditing
+                        imgSource: "qrc:/editor.svg"
+                        entryText: qsTr("Fixtures & Functions")
+                        checked: false
+                        ButtonGroup.group: menuBarGroup
+                        onCheckedChanged:
+                        {
+                            if (checked === true)
+                                switchToContext(fnfEntry.ctxName, fnfEntry.ctxRes)
+                        }
+                    }
+                    MenuBarEntry
+                    {
+                        id: vcEntry
+                        property string ctxName: "VC"
+                        property string ctxRes: "qrc:/VirtualConsole.qml"
+                        implicitHeight: workspaceRow.height
+                        pillMargin: 2
+
+                        visible: qlcplus.accessMask & App.AC_VCControl
+                        imgSource: "qrc:/virtualconsole.svg"
+                        entryText: qsTr("Virtual Console")
+                        ButtonGroup.group: menuBarGroup
+                        onCheckedChanged:
+                        {
+                            if (checked === true)
+                                switchToContext(vcEntry.ctxName, vcEntry.ctxRes)
+                        }
+                        onRightClicked:
+                        {
+                            vcEntry.visible = false
+                            contextManager.detachContext("VC")
+                        }
+                    }
+                    MenuBarEntry
+                    {
+                        id: sdEntry
+                        property string ctxName: "SDESK"
+                        property string ctxRes: "qrc:/SimpleDesk.qml"
+                        implicitHeight: workspaceRow.height
+                        pillMargin: 2
+
+                        visible: qlcplus.accessMask & App.AC_SimpleDesk
+                        imgSource: "qrc:/simpledesk.svg"
+                        entryText: qsTr("Simple Desk")
+                        ButtonGroup.group: menuBarGroup
+                        onCheckedChanged:
+                        {
+                            if (checked === true)
+                                switchToContext(sdEntry.ctxName, sdEntry.ctxRes)
+                        }
+                        onRightClicked:
+                        {
+                            sdEntry.visible = false
+                            contextManager.detachContext("SDESK")
+                        }
+                    }
+                    MenuBarEntry
+                    {
+                        id: smEntry
+                        property string ctxName: "SHOWMGR"
+                        property string ctxRes: "qrc:/ShowManager.qml"
+                        implicitHeight: workspaceRow.height
+                        pillMargin: 2
+
+                        visible: qlcplus.accessMask & App.AC_ShowManager
+                        imgSource: "qrc:/showmanager.svg"
+                        entryText: qsTr("Show Manager")
+                        ButtonGroup.group: menuBarGroup
+                        onCheckedChanged:
+                        {
+                            if (checked === true)
+                                switchToContext(smEntry.ctxName, smEntry.ctxRes)
+                        }
+                        onRightClicked:
+                        {
+                            smEntry.visible = false
+                            contextManager.detachContext("SHOWMGR")
+                        }
+                    }
+                    MenuBarEntry
+                    {
+                        id: ioEntry
+                        property string ctxName: "IOMGR"
+                        property string ctxRes: "qrc:/InputOutputManager.qml"
+                        implicitHeight: workspaceRow.height
+                        pillMargin: 2
+
+                        visible: qlcplus.accessMask & App.AC_InputOutput
+                        imgSource: "qrc:/inputoutput.svg"
+                        entryText: qsTr("Input/Output")
+                        ButtonGroup.group: menuBarGroup
+                        onCheckedChanged:
+                        {
+                            if (checked === true)
+                                switchToContext(ioEntry.ctxName, ioEntry.ctxRes)
+                        }
+                        onRightClicked:
+                        {
+                            ioEntry.visible = false
+                            contextManager.detachContext("IOMGR")
+                        }
+                    }
+                }
             }
+
+            // flexible spacer
+            Item { Layout.fillWidth: true; implicitHeight: 1 }
 
             // ################## DMX DUMP ##################
             IconButton
             {
                 id: sceneDump
                 z: 2
-                implicitWidth: UISettings.iconSizeDefault
-                implicitHeight: UISettings.iconSizeDefault
-                Layout.alignment: Qt.AlignTop
+                implicitWidth: mainToolbar.height * 0.78
+                implicitHeight: mainToolbar.height * 0.78
+                Layout.alignment: Qt.AlignVCenter
                 bgColor: "transparent"
+                border.width: 0
                 imgSource: "qrc:/dmxdump.svg"
                 imgMargins: 10
                 tooltip: qsTr("Dump DMX values on a Scene")
@@ -332,26 +372,26 @@ Rectangle
                     }
                 }
 
-                // channel count bubble
+                // channel count badge
                 Rectangle
                 {
-                    x: -3
-                    y: parent.height - height + 3
-                    width: sceneDump.width * 0.4
-                    height: width
-                    color: "red"
-                    border.width: 1
-                    border.color: UISettings.fgMain
-                    radius: 3
-                    clip: true
+                    x: sceneDump.width - width * 0.75
+                    y: -height * 0.2
+                    width: Math.max(height, dumpBadgeText.implicitWidth + height * 0.5)
+                    height: sceneDump.height * 0.42
+                    color: UISettings.danger
+                    radius: height / 2
                     visible: sceneDump.bubbleLabel !== "0" ? true : false
 
-                    RobotoText
+                    Text
                     {
+                        id: dumpBadgeText
                         anchors.centerIn: parent
-                        height: parent.height * 0.7
-                        label: sceneDump.bubbleLabel
-                        fontSize: height
+                        text: sceneDump.bubbleLabel
+                        color: "white"
+                        font.family: UISettings.robotoFontName
+                        font.pixelSize: parent.height * 0.7
+                        font.weight: Font.DemiBold
                     }
                 }
 
@@ -414,8 +454,10 @@ Rectangle
                     {
                         width: UISettings.iconSizeMedium
                         height: width
-                        radius: width / 4
-                        color: "red"
+                        radius: width / 2
+                        color: UISettings.danger
+                        border.width: 2
+                        border.color: "white"
 
                         RobotoText
                         {
@@ -445,22 +487,77 @@ Rectangle
                 }
             }
 
-            // spacer
+            // ################## BEATS ##################
             Rectangle
             {
-                width: UISettings.iconSizeDefault / 2
-                color: "transparent"
-            }
+                id: bpmPill
+                Layout.alignment: Qt.AlignVCenter
+                implicitWidth: bpmRow.implicitWidth + UISettings.textSizeDefault * 1.4
+                implicitHeight: mainToolbar.height * 0.62
+                radius: height / 2
+                color: gsMouseArea.containsMouse || beatSelectionPanel.visible ? UISettings.bgLight : UISettings.bgControl
+                border.width: 1
+                border.color: UISettings.separator
 
-            // ################## BEATS ##################
-            RobotoText
-            {
-                label: "BPM: " + (ioManager.bpmNumber > 0 ? ioManager.bpmNumber : qsTr("Off"))
-                color: gsMouseArea.containsMouse ? UISettings.bgLight : "transparent"
-                fontSize: UISettings.textSizeDefault
-                Layout.alignment: Qt.AlignTop
-                implicitWidth: width
-                implicitHeight: parent.height
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                Row
+                {
+                    id: bpmRow
+                    anchors.centerIn: parent
+                    spacing: UISettings.textSizeDefault * 0.5
+
+                    Rectangle
+                    {
+                        id: beatIndicator
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: bpmPill.height * 0.36
+                        height: width
+                        radius: width / 2
+                        color: UISettings.fgMedium
+
+                        ColorAnimation on color
+                        {
+                            id: cAnim
+                            from: UISettings.success
+                            to: UISettings.fgMedium
+                            // half the duration of the current BPM
+                            duration: ioManager.bpmNumber ? 30000 / ioManager.bpmNumber : 200
+                            running: false
+                        }
+
+                        Connections
+                        {
+                            id: beatSignal
+                            target: ioManager
+                            function onBeat()
+                            {
+                                cAnim.restart()
+                            }
+                        }
+                    }
+
+                    Text
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "BPM"
+                        color: UISettings.fgMedium
+                        font.family: UISettings.robotoFontName
+                        font.pixelSize: UISettings.textSizeDefault * 0.75
+                        font.weight: Font.DemiBold
+                        font.letterSpacing: 0.5
+                    }
+
+                    Text
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: ioManager.bpmNumber > 0 ? ioManager.bpmNumber : qsTr("Off")
+                        color: UISettings.fgMain
+                        font.family: UISettings.robotoFontName
+                        font.pixelSize: UISettings.textSizeDefault * 0.95
+                        font.weight: Font.DemiBold
+                    }
+                }
 
                 MouseArea
                 {
@@ -474,61 +571,24 @@ Rectangle
                     id: beatSelectionPanel
                     parent: mainView
                     y: mainToolbar.height
-                    x: beatIndicator.x - width
+                    x: mainView.width - width - stopAllButton.width - 16
                     z: 51
                     visible: false
                 }
-            }
-            Rectangle
-            {
-                id: beatIndicator
-                implicitWidth: height
-                implicitHeight: parent.height * 0.5
-                Layout.alignment: Qt.AlignVCenter
-                radius: height / 2
-                border.width: 2
-                border.color: UISettings.bgMedium
-                color: UISettings.fgMedium
-
-                ColorAnimation on color
-                {
-                    id: cAnim
-                    from: "#00FF00"
-                    to: UISettings.fgMedium
-                    // half the duration of the current BPM
-                    duration: ioManager.bpmNumber ? 30000 / ioManager.bpmNumber : 200
-                    running: false
-                }
-
-                Connections
-                {
-                    id: beatSignal
-                    target: ioManager
-                    function onBeat()
-                    {
-                        cAnim.restart()
-                    }
-                }
-            }
-
-            // spacer
-            Rectangle
-            {
-                width: UISettings.iconSizeDefault / 2
-                color: "transparent"
             }
 
             // ################## STOP ALL FUNCTIONS ##################
             IconButton
             {
                 id: stopAllButton
-                implicitWidth: UISettings.iconSizeDefault
-                implicitHeight: UISettings.iconSizeDefault
-                Layout.alignment: Qt.AlignTop
+                implicitWidth: stopRow.implicitWidth + UISettings.textSizeDefault * 1.6
+                implicitHeight: mainToolbar.height * 0.62
+                Layout.alignment: Qt.AlignVCenter
                 enabled: runningCount ? true : false
-                bgColor: "transparent"
-                faSource: FontAwesome.fa_octagon
-                faColor: "red"
+                radius: height / 2
+                bgColor: enabled ? UISettings.danger : UISettings.bgControl
+                hoverColor: Qt.lighter(UISettings.danger, 1.15)
+                pressColor: Qt.darker(UISettings.danger, 1.3)
                 tooltip: qsTr("Stop all the running functions")
 
                 onClicked: qlcplus.stopAllFunctions()
@@ -537,33 +597,53 @@ Rectangle
 
                 onRunningCountChanged: console.log("Functions running: " + runningCount)
 
-                RobotoText
+                Row
                 {
+                    id: stopRow
                     anchors.centerIn: parent
-                    height: parent.height * 0.2
-                    fontSize: height
-                    label: "STOP"
-                }
+                    spacing: UISettings.textSizeDefault * 0.4
+                    opacity: stopAllButton.enabled ? 1.0 : 0.45
 
-                Rectangle
-                {
-                    x: parent.width / 2
-                    y: parent.height / 2
-                    width: parent.width * 0.4
-                    height: width
-                    color: UISettings.highlight
-                    border.width: 1
-                    border.color: UISettings.fgMain
-                    radius: 3
-                    clip: true
-                    visible: stopAllButton.runningCount
-
-                    RobotoText
+                    Text
                     {
-                        anchors.centerIn: parent
-                        height: parent.height * 0.7
-                        label: stopAllButton.runningCount
-                        fontSize: height
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "white"
+                        font.family: UISettings.fontAwesomeFontName
+                        font.pixelSize: stopAllButton.height * 0.42
+                        text: FontAwesome.fa_stop
+                    }
+
+                    Text
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "STOP"
+                        color: "white"
+                        font.family: UISettings.robotoFontName
+                        font.pixelSize: UISettings.textSizeDefault * 0.8
+                        font.weight: Font.Bold
+                        font.letterSpacing: 0.8
+                    }
+
+                    // running functions counter
+                    Rectangle
+                    {
+                        visible: stopAllButton.runningCount
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: Math.max(height, runCountText.implicitWidth + height * 0.5)
+                        height: stopAllButton.height * 0.62
+                        radius: height / 2
+                        color: Qt.rgba(0, 0, 0, 0.28)
+
+                        Text
+                        {
+                            id: runCountText
+                            anchors.centerIn: parent
+                            text: stopAllButton.runningCount
+                            color: "white"
+                            font.family: UISettings.robotoFontName
+                            font.pixelSize: parent.height * 0.65
+                            font.weight: Font.DemiBold
+                        }
                     }
                 }
             }

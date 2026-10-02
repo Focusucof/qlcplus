@@ -27,14 +27,14 @@ Rectangle
     implicitWidth: UISettings.iconSizeDefault * 2
     implicitHeight: UISettings.iconSizeDefault
 
-    color: UISettings.bgLight
+    color: UISettings.bgControl
 
-    border.color: "#1D1D1D"
-    border.width: 2
-    radius: 5
+    border.color: Qt.rgba(1, 1, 1, 0.07)
+    border.width: 1
+    radius: UISettings.controlRadius
     clip: true
 
-    property color fontColor: "white"
+    property color fontColor: UISettings.fgLight
 
     signal zoomInClicked
     signal zoomOutClicked
@@ -44,15 +44,15 @@ Rectangle
         width: parent.width / 2
         height: parent.height
         color: zoMouseArea.pressed ? UISettings.highlight :
-                                     (zoMouseArea.containsMouse ? UISettings.bgLighter : "transparent")
-        radius: 5
+                                     (zoMouseArea.containsMouse ? UISettings.bgLight : "transparent")
+        radius: itemRoot.radius
 
         Text
         {
             anchors.centerIn: parent
             color: fontColor
             font.family: UISettings.fontAwesomeFontName
-            font.pixelSize: parent.height * 0.75
+            font.pixelSize: parent.height * 0.48
             text: FontAwesome.fa_magnifying_glass_minus
         }
         MouseArea
@@ -67,11 +67,12 @@ Rectangle
     // vertical divider
     Rectangle
     {
-        x: (parent.width / 2) - 2
+        x: parent.width / 2
+        y: parent.height * 0.2
         z: 2
-        width: 4
-        height: parent.height
-        color: fontColor
+        width: 1
+        height: parent.height * 0.6
+        color: UISettings.bgLighter
     }
 
     Rectangle
@@ -80,15 +81,15 @@ Rectangle
         width: parent.width / 2
         height: parent.height
         color: ziMouseArea.pressed ? UISettings.highlight :
-                                     (ziMouseArea.containsMouse ? UISettings.bgLighter : "transparent")
-        radius: 5
+                                     (ziMouseArea.containsMouse ? UISettings.bgLight : "transparent")
+        radius: itemRoot.radius
 
         Text
         {
             anchors.centerIn: parent
             color: fontColor
             font.family: UISettings.fontAwesomeFontName
-            font.pixelSize: parent.height * 0.75
+            font.pixelSize: parent.height * 0.48
             text: FontAwesome.fa_magnifying_glass_plus
         }
         MouseArea

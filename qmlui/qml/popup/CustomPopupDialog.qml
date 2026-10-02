@@ -53,26 +53,23 @@ Dialog
             visible: control.title
             elide: Label.ElideRight
             font.family: UISettings.robotoFontName
-            font.pixelSize: UISettings.textSizeDefault
-            font.bold: true
-            padding: 12
-            background:
-                Rectangle
-                {
-                    color: UISettings.sectionHeader
-                    x: 2
-                    y: 2
-                    width: parent.width - 4
-                    height: parent.height - 2
-                }
+            font.pixelSize: UISettings.textSizeDefault * 1.05
+            font.weight: Font.DemiBold
+            horizontalAlignment: Text.AlignHCenter
+            topPadding: 16
+            bottomPadding: 8
+            leftPadding: 16
+            rightPadding: 16
+            background: Item { }
         }
 
     background:
         Rectangle
         {
-            color: UISettings.bgMedium
+            color: UISettings.bgStrong
+            radius: UISettings.cornerRadius * 1.5
             border.color: UISettings.bgLight
-            border.width: 2
+            border.width: 1
 
             focus: true
             Keys.onPressed: (event) =>
@@ -123,13 +120,9 @@ Dialog
             }
 
             background:
-                Rectangle
+                Item
                 {
                     implicitHeight: UISettings.iconSizeDefault
-                    color: UISettings.bgMedium
-                    x: 2
-                    y: 2
-                    width: parent.width - 4
                 }
 
             delegate:
@@ -137,7 +130,11 @@ Dialog
                 {
                     id: buttonControl
                     implicitWidth: UISettings.bigItemHeight * 2
+                    implicitHeight: UISettings.iconSizeDefault * 0.75
                     //implicitWidth: width
+
+                    property bool isDefault: DialogButtonBox.buttonRole === DialogButtonBox.AcceptRole ||
+                                             DialogButtonBox.buttonRole === DialogButtonBox.YesRole
 
                     hoverEnabled: true
 
@@ -147,6 +144,7 @@ Dialog
                             text: buttonControl.text
                             font.family: UISettings.robotoFontName
                             font.pixelSize: UISettings.textSizeDefault
+                            font.weight: Font.Medium
                             opacity: enabled ? 1.0 : 0.3
                             color: UISettings.fgMain
                             horizontalAlignment: Text.AlignHCenter
@@ -157,11 +155,18 @@ Dialog
                     background:
                         Rectangle
                         {
-                            color: buttonControl.hovered ?
-                                       buttonControl.down ? UISettings.highlightPressed : UISettings.highlight : UISettings.bgLight
+                            color:
+                            {
+                                if (buttonControl.down)
+                                    return UISettings.highlightPressed
+                                if (buttonControl.isDefault)
+                                    return buttonControl.hovered ? Qt.lighter(UISettings.highlight, 1.15) : UISettings.highlight
+                                return buttonControl.hovered ? UISettings.bgLight : UISettings.bgControl
+                            }
                             opacity: enabled ? 1 : 0.3
-                            border.color: UISettings.bgStrong
-                            border.width: 2
+                            radius: UISettings.controlRadius
+                            border.color: Qt.rgba(1, 1, 1, 0.08)
+                            border.width: 1
                         }
                 }
         }

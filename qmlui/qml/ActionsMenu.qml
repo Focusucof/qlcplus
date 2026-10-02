@@ -28,7 +28,7 @@ import "."
 Popup
 {
     id: menuRoot
-    padding: 0
+    padding: 4
 
     property var submenuItem: null
     property int flagSize: UISettings.iconSizeDefault * 1.5
@@ -245,9 +245,9 @@ Popup
     background:
         Rectangle
         {
-            //radius: 2
+            radius: UISettings.cornerRadius
             border.width: 1
-            border.color: UISettings.bgStronger
+            border.color: UISettings.bgLight
             color: UISettings.bgStrong
         }
 

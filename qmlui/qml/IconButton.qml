@@ -36,7 +36,7 @@ Button
     rightPadding: 0
 
     property int counter: 1
-    property color bgColor: UISettings.bgLight
+    property color bgColor: UISettings.bgControl
     property color hoverColor: UISettings.hover
     property color pressColor: UISettings.highlightPressed
     property color checkedColor: UISettings.highlight
@@ -44,9 +44,9 @@ Button
     property alias border: contentBody.border
     property alias radius: contentBody.radius
     property string imgSource: ""
-    property int imgMargins: 6
+    property int imgMargins: 8
     property string faSource: ""
-    property color faColor: UISettings.bgStrong
+    property color faColor: UISettings.fgMain
 
     property string tooltip: ""
 
@@ -59,39 +59,36 @@ Button
         }
     }
 
-    Rectangle
-    {
-        anchors.fill: parent
-        color: "black"
-        opacity: 0.6
-        visible: !parent.enabled
-    }
-
     ToolTip
     {
         visible: tooltip && hovered
         text: tooltip
-        delay: 1000
+        delay: 800
         timeout: 5000
+        padding: 6
         background:
             Rectangle
             {
-                color: UISettings.bgMedium
+                color: UISettings.bgControl
+                radius: UISettings.controlRadius
                 border.width: 1
                 border.color: UISettings.bgLight
             }
         contentItem:
             Text
             {
-              text: tooltip
-              color: "white"
-          }
+                text: tooltip
+                color: UISettings.fgMain
+                font.family: UISettings.robotoFontName
+                font.pixelSize: UISettings.textSizeDefault * 0.85
+            }
     }
 
     contentItem:
-        Rectangle
+        Item
         {
-            color: "transparent"
+            opacity: control.enabled ? 1.0 : 0.35
+
             Image
             {
                 id: btnIcon
@@ -108,9 +105,9 @@ Button
                 id: faIcon
                 visible: faSource ? true : false
                 anchors.centerIn: parent
-                color: faColor
+                color: control.checked ? UISettings.fgMain : faColor
                 font.family: UISettings.fontAwesomeFontName
-                font.pixelSize: control.height * 0.70
+                font.pixelSize: control.height * 0.5
                 text: faSource
             }
         }
@@ -120,9 +117,12 @@ Button
         {
             id: contentBody
             color: bgColor
-            radius: 5
-            border.color: "#1D1D1D"
-            border.width: 2
+            radius: UISettings.controlRadius
+            border.color: Qt.rgba(1, 1, 1, 0.06)
+            border.width: 1
+            opacity: control.enabled ? 1.0 : 0.5
+
+            Behavior on color { ColorAnimation { duration: 100 } }
 
             states: [
                 State
@@ -132,6 +132,7 @@ Button
                     {
                         target: contentBody
                         color: checkedColor
+                        border.color: Qt.lighter(checkedColor, 1.3)
                     }
                 },
                 State
@@ -155,4 +156,3 @@ Button
             ]
         }
 }
-

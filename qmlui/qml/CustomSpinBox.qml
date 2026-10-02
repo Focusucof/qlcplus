@@ -57,20 +57,14 @@ SpinBox
         return parseInt(text.replace(suffix, ""))
     }
 
-    Rectangle
-    {
-        anchors.fill: parent
-        z: 3
-        color: "black"
-        opacity: 0.6
-        visible: !parent.enabled
-    }
+    opacity: enabled ? 1.0 : 0.4
 
     background: Rectangle {
         implicitWidth: parent.width
         color: UISettings.bgControl
-        border.color: "#222"
-        radius: 3
+        radius: UISettings.controlRadius
+        border.width: 1
+        border.color: textControl.activeFocus ? UISettings.highlight : Qt.rgba(1, 1, 1, 0.07)
     }
 
     contentItem: TextInput {
@@ -85,7 +79,8 @@ SpinBox
         selectedTextColor: "white"
         horizontalAlignment: Qt.AlignRight
         verticalAlignment: Qt.AlignVCenter
-        rightPadding: 5
+        leftPadding: 6
+        rightPadding: 6
 
         readOnly: !control.editable
         validator: control.validator
@@ -97,16 +92,24 @@ SpinBox
         x: parent.width - width
         implicitHeight: parent.height / 2
         implicitWidth: controlWidth
-        color: up.pressed ? UISettings.bgLight : UISettings.bgControl
-        border.color: UISettings.bgStrong
+        color: up.pressed ? UISettings.highlight : (up.hovered ? UISettings.bgLight : "transparent")
+        radius: UISettings.controlRadius
 
-        Image
+        Rectangle
+        {
+            x: 0
+            width: 1
+            height: parent.height * 2
+            color: UISettings.separator
+        }
+
+        Text
         {
             anchors.centerIn: parent
-            source: "qrc:/arrow-up.svg"
-            width: height * 2
-            height: parent.height - 8
-            sourceSize: Qt.size(width, height)
+            font.family: UISettings.fontAwesomeFontName
+            font.pixelSize: Math.max(8, parent.height * 0.45)
+            color: UISettings.fgLight
+            text: FontAwesome.fa_chevron_up
         }
     }
 
@@ -116,17 +119,16 @@ SpinBox
         y: parent.height / 2
         implicitWidth: controlWidth
         implicitHeight: parent.height / 2
-        color: down.pressed ? UISettings.bgLight : UISettings.bgControl
-        border.color: UISettings.bgStrong
+        color: down.pressed ? UISettings.highlight : (down.hovered ? UISettings.bgLight : "transparent")
+        radius: UISettings.controlRadius
 
-        Image
+        Text
         {
             anchors.centerIn: parent
-            source: "qrc:/arrow-up.svg"
-            rotation: 180
-            width: height * 2
-            height: parent.height - 8
-            sourceSize: Qt.size(width, height)
+            font.family: UISettings.fontAwesomeFontName
+            font.pixelSize: Math.max(8, parent.height * 0.45)
+            color: UISettings.fgLight
+            text: FontAwesome.fa_chevron_down
         }
     }
 }

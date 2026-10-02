@@ -43,10 +43,12 @@ RangeSlider
         {
             x: control.leftPadding + (control.horizontal ? control.first.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
             y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.first.visualPosition * (control.availableHeight - height))
-            implicitWidth: UISettings.listItemHeight * 0.8
-            implicitHeight: UISettings.listItemHeight * 0.8
-            radius: implicitWidth / 5
-            color: UISettings.fgMain
+            implicitWidth: UISettings.listItemHeight * 0.62
+            implicitHeight: UISettings.listItemHeight * 0.62
+            radius: width / 2
+            color: "#F5F5F7"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.35)
         }
 
     second.handle:
@@ -54,10 +56,12 @@ RangeSlider
         {
             x: control.leftPadding + (control.horizontal ? control.second.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
             y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.second.visualPosition * (control.availableHeight - height))
-            implicitWidth: UISettings.listItemHeight * 0.8
-            implicitHeight: UISettings.listItemHeight * 0.8
-            radius: implicitWidth / 5
-            color: UISettings.fgMain
+            implicitWidth: UISettings.listItemHeight * 0.62
+            implicitHeight: UISettings.listItemHeight * 0.62
+            radius: width / 2
+            color: "#F5F5F7"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.35)
         }
 
     background:
@@ -69,8 +73,10 @@ RangeSlider
             implicitHeight: control.horizontal ? UISettings.listItemHeight * 0.15 : 200
             width: control.horizontal ? control.availableWidth : implicitWidth
             height: control.horizontal ? implicitHeight : control.availableHeight
-            radius: 3
-            color: control.palette.midlight
+            radius: Math.min(width, height) / 2
+            color: UISettings.bgControl
+            border.width: 1
+            border.color: UISettings.borderColorDark
             scale: control.horizontal && control.mirrored ? -1 : 1
 
             Rectangle
@@ -80,6 +86,7 @@ RangeSlider
                 width: control.horizontal ? control.second.position * parent.width - control.first.position * parent.width - UISettings.listItemHeight * 0.15 : UISettings.listItemHeight * 0.15
                 height: control.horizontal ? UISettings.listItemHeight * 0.15 : control.second.position * parent.height - control.first.position * parent.height - UISettings.listItemHeight * 0.15
 
+                radius: Math.min(width, height) / 2
                 color: control.bgColor
             }
         }

@@ -36,44 +36,50 @@ RadioButton
     property color pressColor: UISettings.highlightPressed
     property string tooltip: ""
 
-    Rectangle
-    {
-        anchors.fill: parent
-        z: 3
-        color: "black"
-        opacity: 0.4
-        visible: !controlRoot.enabled
-    }
+    opacity: enabled ? 1.0 : 0.4
 
     ToolTip
     {
         visible: tooltip && hovered
         text: tooltip
-        delay: 1000
+        delay: 800
         timeout: 5000
+        padding: 6
         background:
             Rectangle
             {
-                color: UISettings.bgMedium
+                color: UISettings.bgControl
+                radius: UISettings.controlRadius
                 border.width: 1
                 border.color: UISettings.bgLight
             }
         contentItem:
             Text
             {
-              text: tooltip
-              color: "white"
-          }
+                text: tooltip
+                color: UISettings.fgMain
+                font.family: UISettings.robotoFontName
+                font.pixelSize: UISettings.textSizeDefault * 0.85
+            }
     }
 
+    /* macOS-like checkbox: a rounded box that fills with the accent color */
     background:
         Rectangle
         {
             id: cbBody
-            color: hovered ? hoverColor : bgColor
-            radius: 5
-            border.color: controlRoot.focus ? UISettings.highlight : UISettings.bgStrong
-            border.width: 2
+            x: (controlRoot.width - width) / 2
+            y: (controlRoot.height - height) / 2
+            width: Math.min(controlRoot.width, controlRoot.height) * 0.62
+            height: width
+            radius: width * 0.24
+            color: controlRoot.checked ? (controlRoot.pressed ? pressColor : UISettings.highlight)
+                                       : (controlRoot.hovered ? hoverColor : bgColor)
+            border.width: controlRoot.focus ? 2 : 1
+            border.color: controlRoot.focus ? Qt.lighter(UISettings.highlight, 1.3)
+                                            : (controlRoot.checked ? UISettings.highlight : UISettings.bgLighter)
+
+            Behavior on color { ColorAnimation { duration: 100 } }
         }
 
     indicator:
@@ -81,9 +87,9 @@ RadioButton
         {
             visible: checked
             anchors.centerIn: parent
-            color: "lime"
+            color: "white"
             font.family: UISettings.fontAwesomeFontName
-            font.pixelSize: controlRoot.height * 0.80
+            font.pixelSize: Math.min(controlRoot.width, controlRoot.height) * 0.38
             text: FontAwesome.fa_check
         }
 }

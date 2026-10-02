@@ -23,51 +23,64 @@ import QtQuick
 
 QtObject
 {
-    property string robotoFontName: "Roboto Condensed"
+    /* Typography. On macOS this resolves to the system UI font (SF Pro),
+       which gives the interface a native look. The property keeps its
+       historical name since it is referenced all over the UI */
+    property string robotoFontName: Qt.application.font.family
     property string fontAwesomeFontName: "Font Awesome 7 Free"
 
     property real scalingFactor: 1.0
 
-    /* Colors */
-    property color bgStronger:      "#161616"
-    property color bgStrong:        "#232323"
-    property color bgMedium:        "#333"
-    property color bgControl:       "#555"
-    property color bgLight:         "#6F6F6F"
-    property color bgLighter:       "#8F8F8F"
-    property color bgFixtureOdd:    "#414b41"
-    property color bgFixtureEven:   "#42444b"
+    /* Colors - dark graphite theme, inspired by modern macOS lighting apps */
+    property color bgStronger:      "#111113"   // window chrome, deepest wells
+    property color bgStrong:        "#1A1A1D"   // panels, sidebars
+    property color bgMedium:        "#212124"   // main canvas
+    property color bgControl:       "#2E2E32"   // controls at rest
+    property color bgLight:         "#3C3C41"   // raised / hovered controls
+    property color bgLighter:       "#56565C"   // strong borders, pressed
+    property color bgFixtureOdd:    "#26302A"
+    property color bgFixtureEven:   "#272A33"
 
-    property color fgMain:          "white"
-    property color fgMedium:        "#888"
-    property color fgLight:         "#aaa"
+    property color fgMain:          "#F2F2F7"
+    property color fgMedium:        "#8E8E93"
+    property color fgLight:         "#AEAEB2"
 
-    property color sectionHeader:     "#31456B"
-    property color sectionHeaderDiv:  "#22304a"
-    property color highlight:         "#0978FF"
-    property color highlightPressed:  "#044089"
-    property color hover:             "#B6B6B6"
-    property color selection:         "yellow"
-    property color activeDropArea:    "#9DFF52"
-    property color borderColorDark:   "#111"
+    property color sectionHeader:     "#26262A"
+    property color sectionHeaderDiv:  "#323237"
+    property color highlight:         "#0A84FF"
+    property color highlightPressed:  "#0064D1"
+    property color hover:             "#46464C"
+    property color selection:         "#FFD60A"
+    property color activeDropArea:    "#30D158"
+    property color borderColorDark:   "#0B0B0D"
 
-    property color toolbarStartMain:  "#222"
-    property color toolbarStartSub:   "#333"
-    property color toolbarEnd:        "#111"
-    property color toolbarHoverStart: "#444"
-    property color toolbarHoverEnd:   "#171717"
+    /* Toolbars are flat: start and end colors are almost identical */
+    property color toolbarStartMain:  "#1C1C1F"
+    property color toolbarStartSub:   "#1E1E21"
+    property color toolbarEnd:        "#1A1A1D"
+    property color toolbarHoverStart: "#2E2E32"
+    property color toolbarHoverEnd:   "#2A2A2E"
 
-    property color toolbarSelectionMain: "#12B4FF"
-    property color toolbarSelectionSub:  "yellow"
+    property color toolbarSelectionMain: "#0A84FF"
+    property color toolbarSelectionSub:  "#FF9F0A"
+
+    /* Extra theme tokens used by the modern look */
+    property color separator:       "#2C2C30"
+    property color accentSoft:      Qt.rgba(highlight.r, highlight.g, highlight.b, 0.22)
+    property color danger:          "#FF453A"
+    property color success:         "#30D158"
+    property color warning:         "#FF9F0A"
+    property real  cornerRadius:    screenPixelDensity * scalingFactor * 1.6
+    property real  controlRadius:   screenPixelDensity * scalingFactor * 1.1
 
     /* Sizes */
-    property int  textSizeDefault:  screenPixelDensity * scalingFactor * 4.5
+    property int  textSizeDefault:  screenPixelDensity * scalingFactor * 4.2
     property real iconSizeDefault:  screenPixelDensity * scalingFactor * 10 // more or less the size of a finger
     property real iconSizeMedium:   screenPixelDensity * scalingFactor * 8
     property real listItemHeight:   screenPixelDensity * scalingFactor * 7
     property real mediumItemHeight: screenPixelDensity * scalingFactor * 15
     property real bigItemHeight:    screenPixelDensity * scalingFactor * 25
-    property real scrollBarWidth:   screenPixelDensity * scalingFactor * 6
+    property real scrollBarWidth:   screenPixelDensity * scalingFactor * 4
     property real sidePanelWidth:   screenPixelDensity * scalingFactor * 50
 
     /* Persisted Simple Desk channel view scroll position, as the index of the

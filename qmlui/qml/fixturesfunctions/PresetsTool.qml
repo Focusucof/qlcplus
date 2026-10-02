@@ -28,8 +28,9 @@ Rectangle
     width: UISettings.bigItemHeight * 3
     height: presetsArea.height + (showPalette ? paletteBox.height : 0)
     color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
     border.color: UISettings.bgLight
-    border.width: 2
+    border.width: 1
     clip: true
 
     property bool closeOnSelect: false

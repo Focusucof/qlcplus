@@ -141,6 +141,15 @@ Rectangle
                 GradientStop { position: 1; color: UISettings.toolbarEnd }
             }
 
+            // bottom hairline
+            Rectangle
+            {
+                width: parent.width
+                height: 1
+                y: parent.height - 1
+                color: UISettings.borderColorDark
+            }
+
             RowLayout
             {
                 id: rowLayout1
@@ -260,7 +269,7 @@ Rectangle
                 {
                     width: UISettings.iconSizeMedium * 2
                     implicitHeight: viewToolbar.height - 2
-                    fontColor: UISettings.bgStrong
+                    fontColor: UISettings.fgLight
                     onZoomOutClicked: previewLoader.item.setZoom(-0.5)
                     onZoomInClicked: previewLoader.item.setZoom(0.5)
                 }

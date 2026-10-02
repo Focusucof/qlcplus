@@ -29,12 +29,13 @@ ScrollBar
     visible: size == 1.0 ? false : true
     orientation: Qt.Vertical
 
+    padding: 2
+
+    /* macOS-like scroller: transparent track and a slim rounded thumb */
     background:
         Rectangle
         {
-            color: UISettings.bgMedium
-            border.width: 1
-            border.color: UISettings.bgMedium
+            color: control.hovered || control.pressed ? Qt.rgba(1, 1, 1, 0.04) : "transparent"
         }
 
     contentItem:
@@ -42,14 +43,10 @@ ScrollBar
         {
             implicitWidth: UISettings.scrollBarWidth
             implicitHeight: UISettings.scrollBarWidth
-            color: (control.pressed ? UISettings.highlight : UISettings.bgControl)
+            radius: Math.min(width, height) / 2
+            color: control.pressed ? UISettings.fgLight
+                                   : (control.hovered ? UISettings.fgMedium : UISettings.bgLighter)
 
-            Rectangle
-            {
-                anchors.centerIn: parent
-                width: control.orientation == Qt.Vertical ? parent.width * 0.8 : 5
-                height: control.orientation == Qt.Vertical ? 5 : parent.height * 0.8
-                color: UISettings.bgLight
-            }
+            Behavior on color { ColorAnimation { duration: 120 } }
         }
 }

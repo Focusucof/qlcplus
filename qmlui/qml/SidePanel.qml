@@ -94,7 +94,8 @@ Rectangle
         target: sidePanelRoot
         properties: "width"
         to: expandedWidth
-        duration: 100
+        duration: 180
+        easing.type: Easing.OutCubic
         onStopped: sidePanelRoot.width = expandedWidth
     }
 
@@ -104,7 +105,8 @@ Rectangle
         target: sidePanelRoot
         properties: "width"
         to: collapseWidth
-        duration: 100
+        duration: 160
+        easing.type: Easing.OutCubic
         onStopped: sidePanelRoot.width = collapseWidth
     }
 
@@ -113,15 +115,26 @@ Rectangle
         id: gradientBorder
         x: sidePanelRoot.panelAlignment == Qt.AlignRight ? 0 : parent.width - width
         height: parent.height
-        color: "#141414"
+        color: UISettings.bgStrong
         width: collapseWidth
-        gradient: Gradient
+
+        // hairline separating the icon strip from the panel contents
+        Rectangle
         {
-            orientation: Gradient.Horizontal
-            GradientStop { position: 0; color: "#141414" }
-            GradientStop { position: 0.21; color: UISettings.bgStrong }
-            GradientStop { position: 0.79; color: UISettings.bgStrong }
-            GradientStop { position: 1; color: "#141414" }
+            x: sidePanelRoot.panelAlignment == Qt.AlignRight ? parent.width - 1 : 0
+            width: 1
+            height: parent.height
+            color: UISettings.separator
+            visible: sidePanelRoot.width > collapseWidth
+        }
+
+        // hairline separating the side panel from the main view
+        Rectangle
+        {
+            x: sidePanelRoot.panelAlignment == Qt.AlignRight ? 0 : parent.width - 1
+            width: 1
+            height: parent.height
+            color: UISettings.borderColorDark
         }
 
         MouseArea

@@ -30,6 +30,9 @@ Rectangle
     width: UISettings.bigItemHeight * (paletteBox.checked ? 2 : 1.5)
     height: (UISettings.bigItemHeight * 3) + paletteBox.height
     color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
+    border.color: UISettings.bgLight
+    border.width: 1
 
     property bool dmxValues: true
     property bool closeOnSelect: false

@@ -43,23 +43,37 @@ Rectangle
             id: cPropsHeader
             width: parent.width
             height: UISettings.listItemHeight
-            color: headerMouseArea.containsMouse ? UISettings.highlight : UISettings.sectionHeader
+            color: headerMouseArea.containsMouse ? UISettings.bgControl : UISettings.sectionHeader
 
-            RobotoText
-            {
-                anchors.centerIn: parent
-                label: boxRoot.sectionLabel
-                height: UISettings.listItemHeight
-                fontSize: UISettings.textSizeDefault
-            }
+            Behavior on color { ColorAnimation { duration: 100 } }
+
             Text
             {
-                x: parent.width - UISettings.listItemHeight
+                id: disclosureIcon
+                x: UISettings.textSizeDefault * 0.7
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: UISettings.fontAwesomeFontName
-                font.pixelSize: UISettings.textSizeDefault * 1.2
-                text: boxRoot.isExpanded ? FontAwesome.fa_square_minus : FontAwesome.fa_square_plus
-                color: "white"
+                font.pixelSize: UISettings.textSizeDefault * 0.7
+                text: FontAwesome.fa_chevron_right
+                color: UISettings.fgMedium
+                rotation: boxRoot.isExpanded ? 90 : 0
+
+                Behavior on rotation { NumberAnimation { duration: 120 } }
+            }
+
+            Text
+            {
+                anchors.left: disclosureIcon.right
+                anchors.leftMargin: UISettings.textSizeDefault * 0.6
+                anchors.right: parent.right
+                anchors.rightMargin: UISettings.textSizeDefault * 0.6
+                anchors.verticalCenter: parent.verticalCenter
+                text: boxRoot.sectionLabel
+                elide: Text.ElideRight
+                font.family: UISettings.robotoFontName
+                font.pixelSize: UISettings.textSizeDefault * 0.9
+                font.weight: Font.DemiBold
+                color: UISettings.fgLight
             }
 
             MouseArea

@@ -29,9 +29,10 @@ Rectangle
     id: beatChooserBox
     width: UISettings.bigItemHeight * 3
     height: toolbar.height + contentsColumn.height + 10
-    color: UISettings.bgMedium
+    color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
     border.color: UISettings.bgLight
-    border.width: 2
+    border.width: 1
 
     onVisibleChanged:
     {

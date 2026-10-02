@@ -30,6 +30,9 @@ Rectangle
     width: UISettings.bigItemHeight * 2.2
     height: (UISettings.bigItemHeight * 3.2) + paletteBox.height
     color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
+    border.color: UISettings.bgLight
+    border.width: 1
     //border.color: UISettings.bgLight
     //border.width: 2
 

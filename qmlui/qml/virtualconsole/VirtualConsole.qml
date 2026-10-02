@@ -110,6 +110,15 @@ Rectangle
                 GradientStop { position: 1; color: UISettings.toolbarEnd }
             }
 
+            // bottom hairline
+            Rectangle
+            {
+                width: parent.width
+                height: 1
+                y: parent.height - 1
+                color: UISettings.borderColorDark
+            }
+
             RowLayout
             {
                 id: rowLayout1
@@ -202,7 +211,7 @@ Rectangle
                 {
                     width: UISettings.iconSizeMedium * 2
                     implicitHeight: vcToolbar.height - 2
-                    fontColor: UISettings.bgStrong
+                    fontColor: UISettings.fgLight
                     onZoomOutClicked: { virtualConsole.setPageScale(-0.1) }
                     onZoomInClicked: { virtualConsole.setPageScale(0.1) }
                 }

@@ -48,7 +48,8 @@ Popup
         Rectangle
         {
             border.width: 1
-            border.color: UISettings.bgStronger
+            border.color: UISettings.bgLight
             color: UISettings.bgStrong
+            radius: UISettings.cornerRadius
         }
 }

@@ -74,6 +74,15 @@ Rectangle
             GradientStop { position: 1; color: UISettings.toolbarEnd }
         }
 
+        // bottom hairline
+        Rectangle
+        {
+            width: parent.width
+            height: 1
+            y: parent.height - 1
+            color: UISettings.borderColorDark
+        }
+
         RowLayout
         {
             id: topBarRowLayout

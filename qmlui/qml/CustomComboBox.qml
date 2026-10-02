@@ -129,14 +129,7 @@ ComboBox
         updateFromIndex()
     }
 
-    Rectangle
-    {
-        anchors.fill: parent
-        z: 3
-        color: "black"
-        opacity: 0.4
-        visible: !parent.enabled
-    }
+    opacity: enabled ? 1.0 : 0.4
 
     delegate:
         ItemDelegate
@@ -162,7 +155,7 @@ ComboBox
                 Row
                 {
                     spacing: 2
-                    leftPadding: 3
+                    leftPadding: 10
 
                     Image
                     {
@@ -204,10 +197,12 @@ ComboBox
             background:
                 Rectangle
                 {
-                    width: contentItem.width
+                    x: 4
+                    width: parent.width - 8
                     height: delegateHeight
-                    visible: control.down || control.highlighted || control.visualFocus
-                    color: highlighted ? UISettings.highlight : (hovered ? UISettings.bgControl : "transparent")
+                    radius: UISettings.controlRadius
+                    visible: control.down || control.highlighted || control.visualFocus || hovered
+                    color: highlighted ? UISettings.highlight : (hovered ? UISettings.bgLight : "transparent")
                 }
 
             onClicked:
@@ -221,7 +216,6 @@ ComboBox
                     control.valueChanged(itemValue)
             }
 
-            Rectangle { height: 1; width: parent.width; y: parent.height - 1 }
         }
 
     indicator:
@@ -305,8 +299,10 @@ ComboBox
             implicitHeight: delegateHeight
             color: control.hovered ? UISettings.bgLight : UISettings.bgControl
             border.width: 1
-            border.color: UISettings.bgStrong
-            radius: 3
+            border.color: control.visualFocus ? UISettings.highlight : Qt.rgba(1, 1, 1, 0.07)
+            radius: UISettings.controlRadius
+
+            Behavior on color { ColorAnimation { duration: 100 } }
         }
 
     popup:
@@ -318,6 +314,8 @@ ComboBox
             topMargin: 0
             bottomMargin: 0
             padding: 0
+            topPadding: 4
+            bottomPadding: 4
 
             contentItem:
                 ListView
@@ -337,9 +335,10 @@ ComboBox
             background:
                 Rectangle
                 {
-                    color: UISettings.bgLight
+                    color: UISettings.bgControl
+                    radius: UISettings.cornerRadius
                     border.width: 1
-                    border.color: UISettings.bgLighter
+                    border.color: UISettings.bgLight
                 }
         }
 }

@@ -37,58 +37,66 @@ Slider
     property Gradient handleGradientHover: defaultGradientHover
     property color trackColor: defaultTrackColor
 
-    property color defaultTrackColor: "#38b0ff"
+    property color defaultTrackColor: UISettings.highlight
     property Gradient defaultGradient:
         Gradient
         {
-            GradientStop { position: 0; color: "#ccc" }
-            GradientStop { position: 0.45; color: "#555" }
-            GradientStop { position: 0.50; color: "#000" }
-            GradientStop { position: 0.55; color: "#555" }
-            GradientStop { position: 1.0; color: "#888" }
+            GradientStop { position: 0; color: "#EDEDF0" }
+            GradientStop { position: 0.44; color: "#CFCFD4" }
+            GradientStop { position: 0.45; color: "#2A2A2E" }
+            GradientStop { position: 0.55; color: "#2A2A2E" }
+            GradientStop { position: 0.56; color: "#C4C4C9" }
+            GradientStop { position: 1.0; color: "#A9A9AF" }
         }
 
     property Gradient defaultGradientHover:
         Gradient
         {
-            GradientStop { position: 0; color: "#eee" }
-            GradientStop { position: 0.45; color: "#999" }
-            GradientStop { position: 0.50; color: "red" }
-            GradientStop { position: 0.55; color: "#999" }
-            GradientStop { position: 1.0; color: "#ccc" }
+            GradientStop { position: 0; color: "#FFFFFF" }
+            GradientStop { position: 0.44; color: "#E0E0E4" }
+            GradientStop { position: 0.45; color: UISettings.highlight }
+            GradientStop { position: 0.55; color: UISettings.highlight }
+            GradientStop { position: 0.56; color: "#D6D6DA" }
+            GradientStop { position: 1.0; color: "#BEBEC3" }
         }
 
+    opacity: enabled ? 1.0 : 0.4
+
+    /* Lightkey-like fader: a recessed dark well, filled from the bottom
+     * with the track color up to the current level */
     background:
         Rectangle
         {
-            y: slider.leftPadding
-            x: slider.topPadding + slider.availableWidth / 2 - width / 2
-            //implicitWidth: 5
+            y: slider.topPadding
+            x: slider.leftPadding + slider.availableWidth / 2 - width / 2
             implicitHeight: slider.height
-            width: 5
+            width: Math.max(6, Math.min(slider.availableWidth * 0.22, 10))
             height: slider.availableHeight
-            radius: 2
-            color: trackColor
+            radius: width / 2
+            color: UISettings.bgStronger
+            border.width: 1
+            border.color: Qt.rgba(1, 1, 1, 0.05)
 
             Rectangle
             {
+                y: slider.visualPosition * parent.height
                 width: parent.width
-                height: slider.visualPosition * parent.height
-                color: "#bdbebf"
-                radius: 2
+                height: parent.height - y
+                radius: parent.radius
+                color: trackColor
             }
         }
 
     handle:
         Rectangle
         {
-            y: slider.leftPadding + slider.visualPosition * (slider.availableHeight - height)
-            x: slider.topPadding + slider.availableWidth / 2 - width / 2
-            implicitHeight: Math.min(slider.width, UISettings.iconSizeDefault * 0.75)
+            y: slider.topPadding + slider.visualPosition * (slider.availableHeight - height)
+            x: slider.leftPadding + slider.availableWidth / 2 - width / 2
+            implicitHeight: Math.min(slider.width * 0.6, UISettings.iconSizeDefault * 0.5)
             implicitWidth: Math.min(UISettings.iconSizeDefault, slider.width)
             gradient: pressed ? handleGradientHover : handleGradient
-            border.color: "#5c5c5c"
+            border.color: Qt.rgba(0, 0, 0, 0.55)
             border.width: 1
-            radius: 4
+            radius: UISettings.controlRadius
         }
 }

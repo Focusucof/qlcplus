@@ -34,7 +34,7 @@ Rectangle
     property int tFontSize: UISettings.textSizeDefault
     property int functionType: -1
     property string faSource: ""
-    property color faColor: "#222"
+    property color faColor: UISettings.fgLight
     property int iconSize: height - 4
 
     onFunctionTypeChanged: iSrc = functionManager.functionIcon(functionType)

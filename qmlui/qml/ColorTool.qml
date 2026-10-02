@@ -32,6 +32,9 @@ Rectangle
     height: (paletteToolbar.visible ? paletteToolbar.height : 0) +
             colorToolBar.height + toolLoader.height + paletteBox.height
     color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
+    border.color: UISettings.bgLight
+    border.width: 1
 
     property bool closeOnSelect: false
     property var dragTarget: null

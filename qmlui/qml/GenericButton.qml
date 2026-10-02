@@ -27,8 +27,11 @@ Rectangle
     width: 150
     height: UISettings.iconSizeDefault
     color: gbMouseArea.containsMouse ? (gbMouseArea.pressed ? pressedColor : hoverColor) : bgColor
-    border.width: 2
-    border.color: UISettings.bgStrong
+    radius: UISettings.controlRadius
+    border.width: 1
+    border.color: Qt.rgba(1, 1, 1, 0.07)
+
+    Behavior on color { ColorAnimation { duration: 100 } }
 
     property bool useFontawesome: false // false means Roboto, true means FontAwesome
     property int fontSize: UISettings.textSizeDefault
@@ -40,7 +43,7 @@ Rectangle
     property alias label: btnText.text
     property color bgColor: UISettings.bgControl
     property color fgColor: UISettings.fgMain
-    property color hoverColor: UISettings.highlight
+    property color hoverColor: bgColor.a < 0.1 ? UISettings.hover : Qt.lighter(bgColor, 1.25)
     property color pressedColor: UISettings.highlightPressed
     property bool repetition: false
     property bool autoHeight: false
@@ -77,7 +80,8 @@ Rectangle
         visible: !btnRoot.enabled
         anchors.fill: parent
         z: 1
-        color: "black"
+        radius: btnRoot.radius
+        color: UISettings.bgMedium
         opacity: 0.6
     }
 
@@ -92,6 +96,7 @@ Rectangle
         color: fgColor
         font.family: useFontawesome ? UISettings.fontAwesomeFontName : UISettings.robotoFontName
         font.pixelSize: fontSize
+        font.weight: useFontawesome ? Font.Black : Font.Medium
         horizontalAlignment: leftIcon.visible ? Text.AlignLeft : Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight

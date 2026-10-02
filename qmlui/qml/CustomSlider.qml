@@ -35,25 +35,31 @@ Slider
     from: 0
     to: 100
 
+    opacity: enabled ? 1.0 : 0.4
+
+    property real trackThickness: Math.max(4, UISettings.listItemHeight * 0.14)
+
     background:
         Rectangle
         {
             x: control.leftPadding + (control.horizontal ? 0 : (control.availableWidth - width) / 2)
             y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : 0)
-            implicitWidth: control.horizontal ? 200 : UISettings.listItemHeight * 0.15
-            implicitHeight: control.horizontal ? UISettings.listItemHeight * 0.15 : 200
+            implicitWidth: control.horizontal ? 200 : control.trackThickness
+            implicitHeight: control.horizontal ? control.trackThickness : 200
             width: control.horizontal ? control.availableWidth : implicitWidth
             height: control.horizontal ? implicitHeight : control.availableHeight
-            radius: control.horizontal ? height / 2 : width / 2
-            color: UISettings.bgLight
+            radius: control.trackThickness / 2
+            color: UISettings.bgControl
+            border.width: 1
+            border.color: UISettings.borderColorDark
 
             Rectangle
             {
                 y: control.horizontal ? 0 : control.visualPosition * parent.height
-                width: control.horizontal ? control.position * parent.width : UISettings.listItemHeight * 0.15
-                height: control.horizontal ? UISettings.listItemHeight * 0.15 : control.position * parent.height
+                width: control.horizontal ? control.position * parent.width : control.trackThickness
+                height: control.horizontal ? control.trackThickness : control.position * parent.height
                 color: UISettings.highlight
-                radius: control.horizontal ? height / 2 : width / 2
+                radius: control.trackThickness / 2
             }
         }
 
@@ -62,18 +68,11 @@ Slider
         {
             x: control.leftPadding + (control.horizontal ? control.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
             y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.visualPosition * (control.availableHeight - height))
-            implicitWidth: UISettings.listItemHeight * 0.8
-            implicitHeight: UISettings.listItemHeight * 0.8
-            radius: implicitWidth / 5
-            color: UISettings.fgMain
+            implicitWidth: UISettings.listItemHeight * 0.62
+            implicitHeight: UISettings.listItemHeight * 0.62
+            radius: width / 2
+            color: control.pressed ? "#D8D8DC" : "#F5F5F7"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.35)
         }
-
-    Rectangle
-    {
-        anchors.fill: parent
-        z: 3
-        color: "black"
-        opacity: 0.6
-        visible: !parent.enabled
-    }
 }

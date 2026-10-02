@@ -23,10 +23,11 @@ import QtQuick.Controls.Basic
 
 import "."
 
+/* A toolbar entry rendered as a macOS-like segmented control item:
+ * a rounded "pill" that lights up when hovered or checked */
 Button
 {
     id: control
-    //implicitWidth: contentItem.width + 10
     implicitHeight: parent.height
 
     hoverEnabled: true
@@ -34,15 +35,22 @@ Button
     padding: 0
     topPadding: 0
     bottomPadding: 0
+    leftPadding: pillMargin + UISettings.textSizeDefault * 0.6
+    rightPadding: pillMargin + UISettings.textSizeDefault * 0.6
 
     property string imgSource: ""
     property string faSource: ""
-    property color faColor: UISettings.bgStrong
+    property color faColor: UISettings.fgLight
     property string entryText: ""
-    property real mFontSize: UISettings.textSizeDefault * 0.70
-    property int iconSize: imgSource ? height - 4 - topPadding - bottomPadding : 0
+    property real mFontSize: UISettings.textSizeDefault * 0.85
+    property int iconSize: imgSource ? Math.round((height - topPadding - bottomPadding) * 0.52) : 0
     property int iconRotation: 0
 
+    /* margin between the pill and the entry bounds */
+    property real pillMargin: Math.max(2, height * 0.12)
+
+    /* Kept for API compatibility. The modern look is flat, so gradients
+     * provided by callers are not painted anymore */
     property Gradient bgGradient: defBgGradient
     property Gradient selGradient: defSelectionGradient
     property Gradient pressedGradient: defPressedGradient
@@ -69,53 +77,51 @@ Button
     }
 
     contentItem:
-        Row
+        Item
         {
-            id: entryContents
-            width: btnIcon.width + btnLabel.width
-            spacing: 4
+            implicitWidth: entryContents.implicitWidth
+            implicitHeight: control.height
+            opacity: control.enabled ? 1 : 0.35
 
-            Image
+            Row
             {
-                id: btnIcon
-                visible: control.imgSource
-                x: 2
-                anchors.verticalCenter: parent.verticalCenter
-                height: control.iconSize
-                width: control.iconSize
-                rotation: iconRotation
-                source: control.imgSource
-                sourceSize: Qt.size(control.iconSize, control.iconSize)
-            }
+                id: entryContents
+                anchors.centerIn: parent
+                spacing: UISettings.textSizeDefault * 0.45
 
-            Text
-            {
-                id: faIcon
-                visible: faSource ? true : false
-                anchors.verticalCenter: parent.verticalCenter
-                color: faColor
-                font.family: UISettings.fontAwesomeFontName
-                font.pixelSize: control.height * 0.80
-                text: faSource
-            }
-
-            RobotoText
-            {
-                id: btnLabel
-                height: control.height
-                label: control.entryText
-                fontSize: control.mFontSize
-                fontBold: true
-
-                Rectangle
+                Image
                 {
-                    id: selRect
-                    y: parent.height - height - 2
-                    height: UISettings.listItemHeight * 0.1
-                    width: parent.width
-                    radius: height / 2
-                    color: checked ? checkedColor : "transparent"
+                    id: btnIcon
+                    visible: control.imgSource
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: control.iconSize
+                    width: control.iconSize
+                    rotation: iconRotation
+                    source: control.imgSource
+                    sourceSize: Qt.size(control.iconSize, control.iconSize)
+                }
 
+                Text
+                {
+                    id: faIcon
+                    visible: faSource ? true : false
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: control.checked ? control.checkedColor : faColor
+                    font.family: UISettings.fontAwesomeFontName
+                    font.pixelSize: control.height * 0.45
+                    text: faSource
+                }
+
+                Text
+                {
+                    id: btnLabel
+                    visible: text !== ""
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: control.entryText
+                    font.family: UISettings.robotoFontName
+                    font.pixelSize: control.mFontSize
+                    font.weight: Font.DemiBold
+                    color: control.checked || control.hovered ? UISettings.fgMain : UISettings.fgLight
                 }
             }
         }
@@ -123,10 +129,26 @@ Button
     background:
         Rectangle
         {
-            gradient: pressed ? pressedGradient : ((checked || hovered) ? selGradient : bgGradient)
-            opacity: enabled ? 1 : 0.3
-        }
+            x: control.pillMargin
+            y: control.pillMargin
+            width: control.width - control.pillMargin * 2
+            height: control.height - control.pillMargin * 2
+            radius: UISettings.controlRadius
+            color:
+            {
+                if (control.pressed)
+                    return UISettings.bgLighter
+                if (control.checked)
+                    return Qt.rgba(control.checkedColor.r, control.checkedColor.g, control.checkedColor.b, 0.20)
+                if (control.hovered)
+                    return UISettings.toolbarHoverStart
+                return "transparent"
+            }
+            border.width: control.checked ? 1 : 0
+            border.color: Qt.rgba(control.checkedColor.r, control.checkedColor.g, control.checkedColor.b, 0.55)
 
+            Behavior on color { ColorAnimation { duration: 120 } }
+        }
 
     MouseArea
     {
@@ -140,4 +162,3 @@ Button
         }
     }
 }
-

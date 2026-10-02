@@ -45,8 +45,7 @@ Rectangle
     signal exited
 
     color: bgColor
-    border.color: UISettings.bgLight
-    border.width: 1
+    radius: UISettings.controlRadius
 
     states: [
         State
@@ -72,8 +71,8 @@ Rectangle
     Row
     {
         id: entryRow
-        x: 5
-        spacing: 5
+        x: 8
+        spacing: 8
 
         Image
         {
@@ -93,7 +92,7 @@ Rectangle
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignHCenter
             font.family: UISettings.fontAwesomeFontName
-            font.pixelSize: baseMenuEntry.height * 0.80
+            font.pixelSize: baseMenuEntry.height * 0.55
             text: faSource
         }
 
@@ -102,7 +101,7 @@ Rectangle
             label: entryText
             height: baseMenuEntry.height
             fontSize: UISettings.textSizeDefault
-            fontBold: true
+            fontBold: false
         }
     }
 
@@ -119,7 +118,8 @@ Rectangle
     Rectangle
     {
         anchors.fill: parent
-        color: "black"
+        radius: baseMenuEntry.radius
+        color: UISettings.bgStrong
         opacity: 0.6
         visible: !parent.enabled
     }

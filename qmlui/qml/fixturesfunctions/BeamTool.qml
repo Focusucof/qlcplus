@@ -28,9 +28,10 @@ Rectangle
     id: toolRoot
     width: UISettings.bigItemHeight * 3
     height: UISettings.bigItemHeight * 3
-    color: UISettings.bgMedium
+    color: UISettings.bgStrong
+    radius: UISettings.cornerRadius
     border.color: UISettings.bgLight
-    border.width: 2
+    border.width: 1
 
     property real minDegrees: 0
     property real maxDegrees: 0
