@@ -624,8 +624,25 @@ jobs:
           xcrun stapler staple "${DMG_PATH}"
           rm -f /tmp/AuthKey.p8
 
-      - name: Store DMG artifact
+      - name: Store DMG artifact (attempt 1)
+        id: store_dmg_artifact_attempt_1
+        continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
           name: QLC+-${{env.APPVERSION}}-${{env.BUILD_DATE}}-${{env.GIT_REV}}.dmg
           path: QLC+_${{ matrix.task }}.dmg
+
+      - name: Store DMG artifact (attempt 2)
+        id: store_dmg_artifact_attempt_2
+        if: steps.store_dmg_artifact_attempt_1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: QLC+-${{env.APPVERSION}}-${{env.BUILD_DATE}}-${{env.GIT_REV}}.dmg
+          path: QLC+_${{ matrix.task }}.dmg
+
+      - name: Fail if DMG artifact upload still fails
+        if: steps.store_dmg_artifact_attempt_1.outcome == 'failure' && steps.store_dmg_artifact_attempt_2.outcome == 'failure'
+        run: |
+          echo "DMG artifact upload failed twice."
+          exit 1
