@@ -1,4 +1,5 @@
 <p align="center">
+a
   <a href="https://www.qlcplus.org/">
     <img src="resources/icons/png/qlcplus.png" alt="QLC+ Logo" height="60" />
   </a>
